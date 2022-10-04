@@ -1,0 +1,46 @@
+Sub Stock_Market_Analyst()
+    Dim ws As Worksheet
+    Dim Ticker As String
+    Dim Stock_volume As Double
+    Dim Open_price As Double
+    Dim Close_price As Double
+    Dim Price_change As Double
+    Dim Price_change_percentage As Double
+    Dim i As Long
+    Dim j As Integer
+    Dim lRow As Long
+    For Each ws In ThisWorkbook.Worksheets
+        ws.Activate
+        'Find the last non-blank cell in column A(1)
+        lRow = Cells(Rows.Count, 1).End(xlUp).Row
+        Ticker = Cells(2, 1).Value
+        Stock_volume = Cells(2, 7).Value
+        Open_price = Cells(2, 3).Value
+        j = 2
+        For i = 2 To lRow
+            If Cells(i + 1, 1).Value <> Cells(i, 1).Value Then
+                Close_price = Cells(i, 6).Value
+                Cells(j, 12).Value = Stock_volume
+                Cells(j, 9).Value = Ticker
+                Price_change = Close_price - Open_price
+                Cells(j, 10).Value = Price_change
+                If Price_change > 0 Then
+                    Cells(j, 10).Interior.ColorIndex = 4
+                Else
+                    If Price_change < 0 Then
+                        Cells(j, 10).Interior.ColorIndex = 3
+                    End If
+                End If
+                Percentage_change = Price_change / Open_price
+                Cells(j, 11).Value = FormatPercent(Percentage_change, 2)
+                Stock_volume = Cells(i + 1, 7)
+                Ticker = Cells(i + 1, 1).Value
+                Open_price = Cells(i + 1, 3).Value
+                j = j + 1
+            Else
+                Stock_volume = Stock_volume + Cells(i + 1, 7).Value
+                'close_price = Cells(i, 6).Value
+            End If
+        Next i
+    Next ws
+End Sub
